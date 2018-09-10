@@ -246,7 +246,7 @@
                     console.log(tes);
                     // source: "/tes"
 
-                    $(wrapper).append('<div class="row skema"><div class="col-xs-4 col-md-3 col-lg-3"><input class="form-control namefield" onkeyup="nospaces(this)" type="text" name="'+tes+'[key]" placeholder="Field Name" required></div><div class="col-xs-4 col-md-3 col-lg-3"><select class="form-control select2 select_type" name="'+tes+'[value]" style="width: 100%;" id="type">@isset($data_opsigroup) @foreach($data_opsigroup as $databaru)<optgroup label="{{ $databaru->option_grup }}">@isset($data_opsi) @foreach($data_opsi as $opsi) @if($opsi->skemaopsigroup_id == $databaru->id)<option value="{{ $opsi->name_opsi }}">{{ $opsi->value_opsi }}</option> @endif @endforeach @endisset</optgroup>@endforeach @endisset</select></div><p class="add_array"><a class="remove_field"><button type="button" class="baten baten-danger"><i class="fa fa-remove"></i> Delete parents field</button></a></p><div class="col-xs-3 col-md-3 col-lg-3"></div><p><div class="form-skema"><div class=" col-md-3 col-lg-3 skema2"></div><div class="col-md-3 col-lg-3 skema3"></div></p></div></div>').find('.select_type').select2();  
+                    $(wrapper).append('<div class="row skema"><div class="col-xs-4 col-md-3 col-lg-3"><input class="form-control namefield" onkeyup="nospaces(this)" type="text" name="'+tes+'[key]" placeholder="Field Name" required></div><div class="col-xs-4 col-md-3 col-lg-3"><select class="form-control select2 select_type" name="'+tes+'[value]" style="width: 100%;" id="type">@isset($data_opsigroup) @foreach($data_opsigroup as $databaru)<optgroup label="{{ $databaru->option_grup }}">@isset($data_opsi) @foreach($data_opsi as $opsi) @if($opsi->skemaopsigroup_id == $databaru->id)<option value="{{ $opsi->name_opsi }}">{{ $opsi->value_opsi }}</option> @endif @endforeach @endisset</optgroup>@endforeach @endisset</select></div><p class="add_array"><a class="remove_field"><button type="button" class="baten baten-danger"><i class="fa fa-remove"></i> Delete parents field</button></a></p><div class="col-xs-3 col-md-3 col-lg-3"></div><p><div class="form-skema"><div class="col-xs-4 col-md-3 col-lg-3 skema2"></div><div class="col-xs-4 col-md-3 col-lg-3 skema3"></div></p></div></div>').find('.select_type').select2();  
             }
         });
             
@@ -326,9 +326,7 @@
               $(this).parents(".skema").find(".skema3").append('<div data-id="d'+x+'"  class="new_form2 d'+x+' form-group"><p><select class="form-control new_select select2 d'+x+'" name="'+search_field+'['+isi+'][type][]" style="width: 100%;" id="type">@isset($data_opsigroup) @foreach($data_opsigroup as $databaru)<optgroup label="{{ $databaru->option_grup }}">@isset($data_opsi) @foreach($data_opsi as $opsi) @if($opsi->name_opsi == 's') @elseif($opsi->skemaopsigroup_id == $databaru->id)<option value="{{ $opsi->name_opsi }}">{{ $opsi->value_opsi }}</option> @endif @endforeach @endisset</optgroup>@endforeach @endisset</select></p></div>');
               var haha = $(this).parents(".skema").find(".skema3")
               $(haha).find(".select2").select2()
-              $(this).parents(".skema").find(".form-skema").append('<p class="array3 ed'+x+'"><a href="#" class="baten baten-danger remove_array remove-button d'+x+'"><i class="fa fa-remove"></i></a></p><div class="col-xs-12 col-md-12 col-lg-12"></div>');
-              // $(this).parents(".skema").find(".skema4").append('<div class="add_new_array"><button type="button" class="remove button d'+x+' remove_array btn btn-danger"><i class="fa fa-close"></i></button></div>')
-              // $(this).parents(".skema").find(".skema4").append('<div class="remove-button d'+x+'"><p class="remove_array add_new_array"><a class="text-danger"><i class="fa fa-close"></i></a></p></div>');
+              $(this).parents(".skema").find(".form-skema").append('<p class="array3 ed'+x+'"><a href="#" class="baten baten-danger remove_array remove-button d'+x+'"><i class="fa fa-remove"></i></a></p><div class="col-xs-12 col-md-12 col-lg-12"></div><div class="col-xs-6 col-md-6 col-lg-6"></div><div class="form-baru-skema skmd'+x+'"><div class=" col-md-3 col-lg-3 skema-baru2 d'+x+'"></div><div class="col-md-3 col-lg-3 skema-baru3 d'+x+'"></div></div>');
             }
           });
 </script>
@@ -345,20 +343,30 @@
       var split = $(a).find('.array3').attr('class').split('d')
       var classnya = 'd'+split[1];
       // alert(classnya)
-      $(a).find('.e'+a_cari).append('   <a href="#" class="baten baten-primary skema_new_field" title="Add New Array"><i class="fa fa-plus"></i></a>')
+      $(a).find('.e'+a_cari).append('   <a href="#" class="baten baten-primary skema_new_field '+a_cari+'" title="Add New Array"><i class="fa fa-plus"></i></a>')
       var cari_sblm = $(this).parents('.skema').find('.form-skema')
       var cari_sblm2 = $(cari_sblm).find('.skema3').find('.e'+a_cari)
       var cari_class = $(cari_sblm2).data('id')
       // console.log(cari_sblm2)
       // alert(cari_sblm2)
        } else {
-         // console.log($(this).parents(".skema").find(".skema_add_field").remove())
-         // console.log($(this).parents(".skema").find(".skema2").empty())
-         // console.log($(this).parents(".skema").find(".skema3").empty())
-         // console.log($(this).parents(".skema").find(".skema4").empty())
-         // console.log("wad")
-         // alert('duhhh')
+
        }
+  })
+
+  $(document).on('click', '.skema_new_field', function(){
+    if(x < 11){
+      x++;
+      var ambil_class = $(this).attr('class').split(' ')[3]
+      console.log(ambil_class)
+      var search_field = $(this).parents('.skema').find('.new_select').attr('name')
+      var diganti = search_field.split('[]')[0]
+      // console.log(diganti+'[array][]')
+
+      console.log($(this).parents(".skema").find('.form-skema').find('.skm'+ambil_class).find('.'+ambil_class+''))
+       console.log($(this).parents(".skema").find(".form-skema").find('.skm'+ambil_class+'').find('.skema-baru2.'+ambil_class+'').append('<div class="new_form '+x+' form-group"><input class="get_input form-control" name="'+search_field+'[fill][]" onkeyup="nospaces(this)" type="text" placeholder="New Field array" required/></div>')); //add input box
+       console.log($(this).parents(".skema").find(".form-skema").find('.skm'+ambil_class+'').find('.skema-baru3.'+ambil_class+'').append('<div class="new_form '+x+' form-group"><input class="get_input form-control" name="'+search_field+'[typedata][]" onkeyup="nospaces(this)" type="text" placeholder="New Field array" required/></div>')); //add input box
+    }
   })
 </script>
 @elseif(Request::segment(5) === 'resource')
