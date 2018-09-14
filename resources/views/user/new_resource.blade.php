@@ -8,20 +8,21 @@
           <div class="box box-primary">
             <div class="box-body">
               <div class="feature-block">
-                <h3 class=""><a href="/project/{{ Auth::user()->id }}/p/{{ $data_project->id }}" title="Back to Project"><i class="fa fa-chevron-circle-left fa-2x"></i></a> New Resource</h3>
+                <h3 class=""><a href="/project/{{ Auth::user()->id }}/p/{{ $data_project->id }}" title="Back to Project"><i class="fa fa-chevron-circle-left fa-2x"></i></a> New Data</h3>
                   <hr>
                 <form method="POST" action="{{action('ProjectController@add_resource')}}" role="form" >
                   {{ csrf_field() }}
                   <input type="hidden" name="project_id" value="{{ $data_project->id }}">
                   <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
                   <div class="form-group">
-                    <label for="ResourceName">Resource Name</label>
-                    <p>Enter meaningful resource name, it will be used to generate RESTful API URLs</p>
+                    <label for="ResourceName">Data Name</label>
+                    <p>Enter meaningful data name, it will be used to generate RESTful API URLs</p>
                     <p>EXAMPLE: users, comments, articles </p>
-                    <input type="text" class="form-control" id="resourcename" name="resource_name" onkeyup="nospaces(this)" placeholder="Enter Resource Name" required>
+                    <input type="text" class="form-control" id="resourcename" name="resource_name" onkeyup="nospaces(this)" placeholder="Enter Data Name" required>
                   </div>
                   <div class="form-group">
                     <label>Schema</label>
+                    <small>*Define Data schema, this will be used to generate mock data*</small>
                     <div class="daftar-isi">
                       <div class="row skema">
                         <div class="col-xs-4 col-md-3 col-lg-3">

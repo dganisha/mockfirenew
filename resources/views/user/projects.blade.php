@@ -11,7 +11,7 @@
               <h4>Api Endpoint for <strong>{{ $data_project->name_project }}</strong></h4>
 	    				<pre><strong class="text-danger">{{ url('/') }}/api/{{ $data_project->name_project }}</strong>/:endpoint</pre><br>
 	                    If you want use <strong>GET</strong> by <strong>ID</strong> use this ; <pre class="text-danger">{{ url('/') }}/api/{{ $data_project->name_project }}/:endpoint<strong>/1</strong></pre>
-	                    <a href="/project/{{ Auth::user()->id }}/p/{{ $data_project->id }}/new_resource" class="btn btn-primary"><span class="text-white">New Resource</span></a>
+	                    <a href="/project/{{ Auth::user()->id }}/p/{{ $data_project->id }}/new_resource" class="btn btn-primary"><span class="text-white">New Data</span></a>
                       <a href="#" class="btn btn-success" data-toggle="modal" data-target="#modal-default">Invite Firends</a>
 	    			</div>
     			</div>
@@ -40,7 +40,7 @@
               <thead>
                 <tr>
                     <th>#</th>
-                    <th>Name Resource</th>
+                    <th>Name Data</th>
                     <th>Action</th>
                 </tr>
               </thead>

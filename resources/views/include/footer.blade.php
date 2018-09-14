@@ -3,7 +3,7 @@
     <div class="copyrights">
       <div class="container">
         <style type="text/css">.color-text{ color:#dedede; } </style>
-        <p class="color-text">&copy; Copyrights MockFire. All rights reserved.</p>
+        <p class="color-text">&copy; Copyrights <a href="http://meridian.id">meridian.id</a> All rights reserved.</p>
         <div class="credits">
           <!--
             All the links in the footer should remain intact.

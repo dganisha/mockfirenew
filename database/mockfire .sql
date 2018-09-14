@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2
+-- version 4.5.4.1deb2ubuntu2.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 25 Agu 2018 pada 19.53
+-- Generation Time: 14 Sep 2018 pada 14.11
 -- Versi Server: 5.7.23-0ubuntu0.16.04.1
 -- PHP Version: 7.1.20-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -41,7 +41,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (18, '2018_08_06_095238_CreateRoleUser', 6),
 (19, '2018_08_06_095509_CreateColumnRoleinUser', 7),
 (20, '2018_07_24_042350_CreateTableResource', 8),
-(22, '2018_07_24_042747_CreateTableSchema', 9);
+(22, '2018_07_24_042747_CreateTableSchema', 9),
+(24, '2018_09_05_083111_CreateTableUserProjects', 10);
 
 -- --------------------------------------------------------
 
@@ -87,7 +88,11 @@ INSERT INTO `projects` (`id`, `user_id`, `name_project`, `created_at`, `updated_
 (13, 6, 'tes', '2018-08-09 03:31:35', '2018-08-09 03:31:35', 'd1qaGP2l85ZpKaP'),
 (19, 1, 'bangunindo', '2018-08-23 01:06:38', '2018-08-23 01:06:38', 'c9n2N9MculJrq2K'),
 (20, 1, 'halohalo', '2018-08-23 01:07:01', '2018-08-23 01:07:01', 'uON1nhslUxgaHuJ'),
-(21, 1, 'dpayer', '2018-08-24 09:58:19', '2018-08-24 09:58:19', 'Ou3zunOppvzITAZ');
+(21, 1, 'dpayer', '2018-08-24 09:58:19', '2018-08-24 09:58:19', 'Ou3zunOppvzITAZ'),
+(22, 1, 'TesCoba', '2018-09-03 05:58:00', '2018-09-03 05:58:00', 'BFctPo3hSMyDNAd'),
+(25, 1, 'TES', '2018-09-03 06:03:23', '2018-09-03 06:03:23', 'VSv5NOOcfko3VaV'),
+(26, 1, 'wi', '2018-09-03 06:04:51', '2018-09-03 06:04:51', 'wA4RTh6SVvryENL'),
+(30, 6, 'dpayer', '2018-09-05 04:36:10', '2018-09-05 04:36:10', 'LdcG5W3ypvdaDN7');
 
 -- --------------------------------------------------------
 
@@ -99,7 +104,7 @@ CREATE TABLE `resources` (
   `id` int(10) UNSIGNED NOT NULL,
   `project_id` int(10) UNSIGNED NOT NULL,
   `name_resource` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` enum('POST','GET','PUT','DELETE') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('POST','GET','PUT','DELETE') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -109,10 +114,12 @@ CREATE TABLE `resources` (
 --
 
 INSERT INTO `resources` (`id`, `project_id`, `name_resource`, `type`, `created_at`, `updated_at`) VALUES
-(5, 11, 'users', 'POST', '2018-08-06 06:48:20', '2018-08-06 06:48:20'),
-(1533780946, 11, 'tes', 'POST', '2018-08-09 02:15:46', '2018-08-09 02:15:46'),
-(1534986622, 20, 'users', 'POST', '2018-08-23 01:10:22', '2018-08-23 01:10:22'),
-(1535105541, 11, 'number', 'POST', '2018-08-24 10:12:21', '2018-08-24 10:12:21');
+(1536025851, 11, 'Manusia', NULL, '2018-09-04 01:50:51', '2018-09-04 01:50:51'),
+(1536110564, 11, 'users', NULL, '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(1536114205, 11, 'pulsa', NULL, '2018-09-05 02:23:25', '2018-09-05 02:23:25'),
+(1536205299, 30, 'Users', NULL, '2018-09-06 03:41:39', '2018-09-06 03:41:39'),
+(1536810195, 30, 'Database', NULL, '2018-09-13 03:43:15', '2018-09-13 03:43:15'),
+(1536904599, 30, 'DB7', NULL, '2018-09-14 05:56:39', '2018-09-14 05:56:39');
 
 -- --------------------------------------------------------
 
@@ -126,6 +133,7 @@ CREATE TABLE `skema` (
   `name_schema` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type_schema` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `child_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `field` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -135,28 +143,47 @@ CREATE TABLE `skema` (
 -- Dumping data untuk tabel `skema`
 --
 
-INSERT INTO `skema` (`id`, `resource_id`, `name_schema`, `type_schema`, `parent_id`, `field`, `created_at`, `updated_at`) VALUES
-(71, 1533780946, 'id', 'ObjectID', '', 'field1', '2018-08-09 02:16:12', '2018-08-09 02:16:12'),
-(72, 1533780946, 'Name', 'array', '', 'field2', '2018-08-09 02:16:12', '2018-08-09 02:16:12'),
-(73, 1533780946, 'FirstName', 'firstName', '72', 'field2', '2018-08-09 02:16:12', '2018-08-09 02:16:12'),
-(74, 1533780946, 'LastName', 'lastName', '72', 'field2', '2018-08-09 02:16:13', '2018-08-09 02:16:13'),
-(85, 5, 'id', 'ObjectID', '', 'field1', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(86, 5, 'Name', 'array', '', 'field2', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(87, 5, 'FirstName', 'firstName', '86', 'field2', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(88, 5, 'LastName', 'lastName', '86', 'field2', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(89, 5, 'FullName', 'name', '86', 'field2', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(90, 5, 'Address', 'array', '', 'field3', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(91, 5, 'Address1', 'streetAddress', '90', 'field3', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(92, 5, 'Address2', 'secondaryAddress', '90', 'field3', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(93, 5, 'ZipCode', 'postcode', '90', 'field3', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(94, 5, 'Phone', 'phoneNumber', '', 'field4', '2018-08-09 03:04:34', '2018-08-09 03:04:34'),
-(140, 1535105541, 'id', 'ObjectID', '', 'field1', '2018-08-24 13:52:47', '2018-08-24 13:52:47'),
-(141, 1535105541, 'nomor', 'locale', '', 'field2', '2018-08-24 13:52:47', '2018-08-24 13:52:47'),
-(147, 1534986622, 'id', 'ObjectID', '', 'field1', '2018-08-25 12:15:12', '2018-08-25 12:15:12'),
-(148, 1534986622, 'Name', 'array', '', 'field2', '2018-08-25 12:15:12', '2018-08-25 12:15:12'),
-(149, 1534986622, 'FirstName', 'firstName', '148', 'field2', '2018-08-25 12:15:12', '2018-08-25 12:15:12'),
-(150, 1534986622, 'LastName', 'postcode', '148', 'field2', '2018-08-25 12:15:12', '2018-08-25 12:15:12'),
-(151, 1534986622, 'Address', 'city', '', 'field4', '2018-08-25 12:15:12', '2018-08-25 12:15:12');
+INSERT INTO `skema` (`id`, `resource_id`, `name_schema`, `type_schema`, `parent_id`, `child_id`, `field`, `created_at`, `updated_at`) VALUES
+(285, 1536025851, 'id', 'ObjectID', '', '0', 'field1', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(286, 1536025851, 'Name', 'array', '', '0', 'field2', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(287, 1536025851, 'FirstName', 'firstNameMale', '286', '0', 'field2', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(288, 1536025851, 'LastName', 'lastName', '286', '0', 'field2', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(289, 1536025851, 'Address', 'array', '', '0', 'field3', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(290, 1536025851, 'Address1', 'streetAddress', '289', '0', 'field3', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(291, 1536025851, 'Address2', 'secondaryAddress', '289', '0', 'field3', '2018-09-05 01:08:40', '2018-09-05 01:08:40'),
+(292, 1536025851, 'Phone', 'phoneNumber', '', '0', 'field4', '2018-09-05 01:08:41', '2018-09-05 01:08:41'),
+(293, 1536025851, 'Department', 'departmentName', '', '0', 'field5', '2018-09-05 01:08:41', '2018-09-05 01:08:41'),
+(294, 1536110564, 'id', 'ObjectID', '', '0', 'field1', '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(295, 1536110564, 'username', 'firstName', '', '0', 'field2', '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(296, 1536110564, 'Name', 'array', '', '0', 'field3', '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(297, 1536110564, 'FirstName', 'firstNameMale', '296', '0', 'field3', '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(298, 1536110564, 'LastName', 'lastName', '296', '0', 'field3', '2018-09-05 01:22:44', '2018-09-05 01:22:44'),
+(299, 1536114205, 'id', 'ObjectID', '', '0', 'field1', '2018-09-05 02:23:25', '2018-09-05 02:23:25'),
+(300, 1536114205, 'content', 'array', '', '0', 'field2', '2018-09-05 02:23:25', '2018-09-05 02:23:25'),
+(301, 1536114205, 'trxid', 'randomNumber', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(302, 1536114205, 'code', 'postcode', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(303, 1536114205, 'phone', 'phoneNumber', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(304, 1536114205, 'status', 'randomNumber', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(305, 1536114205, 'sn', 'boolean', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(306, 1536114205, 'note', 'words', '300', '0', 'field2', '2018-09-05 02:23:26', '2018-09-05 02:23:26'),
+(422, 1536205299, 'id', 'ObjectID', '', NULL, 'field1', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(423, 1536205299, 'Name', 'array', '', NULL, 'field2', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(424, 1536205299, 'FirstName', 'firstNameMale', '', NULL, 'field2', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(425, 1536205299, 'LastName', 'lastName', '423', NULL, 'field2', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(426, 1536205299, 'Address', 'array', '', NULL, 'field4', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(427, 1536205299, 'Address1', 'streetAddress', '426', NULL, 'field4', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(428, 1536205299, 'Address2', 'secondaryAddress', '426', NULL, 'field4', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(429, 1536205299, 'ZipCode', 'postcode', '426', NULL, 'field4', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(430, 1536205299, 'Phone', 'phoneNumber', '', NULL, 'field5', '2018-09-07 06:20:03', '2018-09-07 06:20:03'),
+(732, 1536904599, 'id', 'ObjectID', '', NULL, 'field1', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(733, 1536904599, 'Users', 'array', '', NULL, 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(734, 1536904599, 'Name', 'array', '733', NULL, 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(735, 1536904599, 'FullName', 'name', '734', '734', 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(736, 1536904599, 'FirstName', 'firstName', '734', '734', 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(737, 1536904599, 'LastName', 'lastName', '734', '734', 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(738, 1536904599, 'Address', 'streetAddress', '733', NULL, 'field2', '2018-09-14 06:47:13', '2018-09-14 06:47:13'),
+(739, 1536904599, 'phone', 'phoneNumber', '', NULL, 'field3', '2018-09-14 06:47:14', '2018-09-14 06:47:14'),
+(740, 1536904599, 'zipCode', 'postcode', '', NULL, 'field4', '2018-09-14 06:47:14', '2018-09-14 06:47:14');
 
 -- --------------------------------------------------------
 
@@ -179,7 +206,7 @@ CREATE TABLE `skemaopsi` (
 
 INSERT INTO `skemaopsi` (`id`, `skemaopsigroup_id`, `name_opsi`, `value_opsi`, `created_at`, `updated_at`) VALUES
 (1, 1, 'postcode', 'Zip Code', NULL, NULL),
-(2, 1, 'city', 'City', NULL, NULL),
+(2, 1, 'city', 'City', NULL, '2018-09-07 06:49:04'),
 (3, 1, 'streetAddress', 'Street Address', NULL, NULL),
 (4, 1, 'secondaryAddress', 'Secondary Address', NULL, NULL),
 (6, 1, 'country', 'Country', NULL, NULL),
@@ -244,6 +271,28 @@ INSERT INTO `skemaopsigroup` (`id`, `option_grup`, `created_at`, `updated_at`) V
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `userprojects`
+--
+
+CREATE TABLE `userprojects` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `project_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `userprojects`
+--
+
+INSERT INTO `userprojects` (`id`, `user_id`, `project_id`, `created_at`, `updated_at`) VALUES
+(5, 6, 30, '2018-09-05 04:36:10', '2018-09-05 04:36:10'),
+(6, 1, 30, '2018-09-05 04:40:52', '2018-09-05 04:40:52');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `users`
 --
 
@@ -263,10 +312,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Dhiemas Ganisha', 'dhimasganisha@gmail.com', '$2y$10$84lFAkDMKYm.Tx/BZaMA8Od.7xTkmfqbYtd/nghnZn3O.0jPXpvBG', 'Administrator', 'hBOJyxM3AmwjEoJbzTXG2ln58G9ErRFP4BKXshGEyJFE0Dwd4AoNBC23Rl9O', '2018-07-29 19:40:45', '2018-07-29 19:40:45'),
-(6, 'Akun Demo', 'demo@gmail.com', '$2y$10$SaVxuZ0IuIm0Xza3LQZgtePWqSTtUW4.tu/hFtGfwLfFp7Bv.mjgq', 'User', 'wVXZfpr1wMun2WHDSjtBPke8SJsaSaflDUerZk6gqeOnMiSrHKfcBA2Ctnf9', '2018-08-01 07:25:07', '2018-08-01 07:25:07'),
-(7, 'tes', 'tes@gmail.com', '$2y$10$njaP2FvVyk7jXlO41q8LreRP067nJGfPdZL3Ofgnlp25aDYvaitCq', 'User', NULL, '2018-08-10 14:12:53', '2018-08-10 14:12:53'),
-(8, 'Admin Web', 'admin@admin.com', '$2y$10$Mwpn7lVx1Iryx9V7oCXEL.8sifLv9mlPg5FkTkILfqBwb8rivEBku', 'User', NULL, '2018-08-25 12:49:38', '2018-08-25 12:49:38');
+(1, 'Dhiemas Ganisha', 'dhimasganisha@gmail.com', '$2y$10$84lFAkDMKYm.Tx/BZaMA8Od.7xTkmfqbYtd/nghnZn3O.0jPXpvBG', 'Administrator', 'nTD8xctBSnqAwavOjHQJjZrqiZguuw9zK3GaAmi2VcCHuR1qbdsqkhETnVPU', '2018-07-29 19:40:45', '2018-07-29 19:40:45'),
+(6, 'Akun Demo', 'demo@gmail.com', '$2y$10$SaVxuZ0IuIm0Xza3LQZgtePWqSTtUW4.tu/hFtGfwLfFp7Bv.mjgq', 'User', 'WSK3pAYpT54kyb9cz1nl2Ay8zUmtv8kN8vTdwwr7LgldNsFUABP5MNPeF8AU', '2018-08-01 07:25:07', '2018-08-01 07:25:07'),
+(8, 'Admin Web', 'admin@admin.com', '$2y$10$Mwpn7lVx1Iryx9V7oCXEL.8sifLv9mlPg5FkTkILfqBwb8rivEBku', 'Administrator', 'e3ZRixkv2Lz376kcAVBjgymJK7ogK4igf6OxN5S4P8JAGeVSVzj2TP1y3mAI', '2018-08-25 12:49:38', '2018-08-25 12:49:38');
 
 --
 -- Indexes for dumped tables
@@ -319,6 +367,14 @@ ALTER TABLE `skemaopsigroup`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `userprojects`
+--
+ALTER TABLE `userprojects`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userprojects_user_id_foreign` (`user_id`),
+  ADD KEY `userprojects_project_id_foreign` (`project_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -333,22 +389,22 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1535105542;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1536904600;
 --
 -- AUTO_INCREMENT for table `skema`
 --
 ALTER TABLE `skema`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=741;
 --
 -- AUTO_INCREMENT for table `skemaopsi`
 --
@@ -359,6 +415,11 @@ ALTER TABLE `skemaopsi`
 --
 ALTER TABLE `skemaopsigroup`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT for table `userprojects`
+--
+ALTER TABLE `userprojects`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `users`
 --
@@ -391,3 +452,10 @@ ALTER TABLE `skema`
 --
 ALTER TABLE `skemaopsi`
   ADD CONSTRAINT `skemaopsi_skemaopsigroup_id_foreign` FOREIGN KEY (`skemaopsigroup_id`) REFERENCES `skemaopsigroup` (`id`);
+
+--
+-- Ketidakleluasaan untuk tabel `userprojects`
+--
+ALTER TABLE `userprojects`
+  ADD CONSTRAINT `userprojects_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
+  ADD CONSTRAINT `userprojects_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);

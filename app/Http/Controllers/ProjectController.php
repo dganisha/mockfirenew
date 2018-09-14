@@ -143,7 +143,8 @@ class ProjectController extends Controller
                     $data_opsi = Skemaopsi::get();
                     $data_opsigroup = Skemaopsigroup::get();
                     $data_cek = Skema::where('resource_id', $data_resource->id)->where('type_schema','array')->get();
-                    return view('user.edit_resource', compact('data_skema','data_project','data_resource','data_opsi','data_opsigroup','data_cek'));
+                    $data_skema_grandchild = Skema::where('resource_id', $data_resource->id)->where('child_id','!=','')->get();
+                    return view('user.edit_resource', compact('data_skema','data_skema_grandchild','data_project','data_resource','data_opsi','data_opsigroup','data_cek'));
                 }
             }
         }else{
@@ -164,13 +165,14 @@ class ProjectController extends Controller
     }
 
     public function add_resource(Request $request) {
+        // return $request->all();
         $request->validate([
             'resource_name' => 'required',
             'project_id' => 'required|numeric',
             'field.*.key' => 'required',
             'field.*.value' => 'required',
-            'field.*.value.array.data.*' => 'required',
-            'field.*.value.array.type.*' => 'required'
+            'field.*.value.data.*' => 'required',
+            'field.*.value.type.*' => 'required'
         ]);
     	// return $request->all();
 
@@ -188,7 +190,6 @@ class ProjectController extends Controller
 	            'name_resource' => $request->resource_name,
 	            'type' => $request->method,
 	        ]);
-
     	foreach ($decode['field'] as $key => $form) {
     		// echo $value['key']." ";
     		// echo $key;
@@ -209,24 +210,58 @@ class ProjectController extends Controller
 	            'parent_id' => '',
 	            'field' => $key,
 	        ]);
+            // DONE  ^ = -> // 
+            // echo "<p>".$form['key']." -> $val </p>";
 
-    		if(is_array($form['value'])) {
-    			foreach ($form['value']['array']['data'] as $ki => $value) {
-    				$create_schema = Skema::create([
-			            'resource_id' => $create_resource->id,
-			            'name_schema' => $value,
-			            'type_schema' => $form['value']['array']['type'][$ki],
-			            'parent_id' => $create_schema->id,
-			            'field' => $key,
-			        ]);
-    			}
+            if(is_array($form['value'])){
+                foreach ($form['value']['key'] as $ke1 => $value1) {
+                    if(is_array($form['value']['value'][$ke1])){
 
-    		}
+                        // echo "<hr><p>$value1 -> array [$ke1]</p>";
+                        $create_schema2 = Skema::create([
+                            'resource_id' => $create_resource->id,
+                            'name_schema' => $value1,
+                            'type_schema' => 'array',
+                            'parent_id' => $create_schema->id,
+                            'field' => $key,
+                        ]);
 
+                        foreach ($form['value']['value'] as $key2 => $value2) {
+                            if(is_array($value2)){
+                                // return $value2;
+                                foreach ($value2['key'] as $key3 => $value3) {
+                                    if($key2 == $ke1){
+                                        // echo "<p>$key2 == $ke1</p>";
+                                        // echo "<p>$value3 -> ".$value2['value'][$key3]." </p>";
+                                        $create_schema3 = Skema::create([
+                                            'resource_id' => $create_resource->id,
+                                            'name_schema' => $value3,
+                                            'type_schema' => $value2['value'][$key3],
+                                            'parent_id' => $create_schema2->id,
+                                            'child_id' => $create_schema2->id,
+                                            'field' => $key,
+                                        ]);
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }else{
+                        // echo "<p>$value1 -> ".$form['value']['value'][$ke1]."</p>";
+                        $create_schema2 = Skema::create([
+                            'resource_id' => $create_resource->id,
+                            'name_schema' => $value1,
+                            'type_schema' => $form['value']['value'][$ke1],
+                            'parent_id' => $create_schema->id,
+                            'field' => $key,
+                        ]);
+                    }
+                }         
+            }
     	}
         $ud = Auth::user()->id;
         $generate = $this->generate_data($create_resource->id);
-        if($create_schema == TRUE){
+        if($create_schema == TRUE && $create_schema2 == TRUE ){
             return redirect("/project/$ud/p/$request->project_id")->with('success','new resource created !');
         }else{
             return redirect("/project/$ud/p/$request->project_id")->with('failed','error when insert to database');
@@ -236,14 +271,14 @@ class ProjectController extends Controller
     public function edit_resource_update(Request $request)
     {
         $request->validate([
-            'resource_name' => 'required',
             'project_id' => 'required|numeric',
+            'resource_id' => 'required|numeric',
             'field.*.key' => 'required',
             'field.*.value' => 'required',
-            'field.*.value.array.data.*' => 'required',
-            'field.*.value.array.type.*' => 'required'
+            'field.*.value.data.*' => 'required',
+            'field.*.value.type.*' => 'required'
         ]);
-    	return $request->all();
+    	// return $request->all();
     	$decode = $request->all();
 
     	// $field = [];
@@ -251,41 +286,74 @@ class ProjectController extends Controller
     	$delete = Skema::where('resource_id', $request->resource_id)->delete();
     	if($delete) {
 	    	foreach ($decode['field'] as $key => $form) {
-	    		// echo $value['key']." ";
-	    		// echo $key;
-	    		$form['key'];
-	    		$form['value'];
+            // echo $value['key']." ";
+            // echo $key;
+            $form['key'];
+            $form['value'];
 
-	    		if(is_array($form['value'])) {
-	    			$val= 'array';
-	    		}else{
-	    			$val= $form['value'];
-	    		}
+            if(is_array($form['value'])) {
+                $val= 'array';
+            }else{
+                $val= $form['value'];
+            }
 
-	    		// echo $key." ";
-	    		
-	    		
-			        $create_schema = Skema::create([
-			            'resource_id' => $request->resource_id,
-			            'name_schema' => $form['key'],
-			            'type_schema' => $val,
-			            'parent_id' => '',
-			            'field' => $key,
-			        ]);
+            // echo $key." ";
+            $create_schema = Skema::create([
+                'resource_id' => $request->resource_id,
+                'name_schema' => $form['key'],
+                'type_schema' => $val,
+                'parent_id' => '',
+                'field' => $key,
+            ]);
+            // DONE  ^ = -> // 
+            // echo "<p>".$form['key']." -> $val </p>";
 
-		    		if(is_array($form['value'])) {
-		    			foreach ($form['value']['array']['data'] as $ki => $value) {
-		    				Skema::create([
-					            'resource_id' => $request->resource_id,
-					            'name_schema' => $value,
-					            'type_schema' => $form['value']['array']['type'][$ki],
-					            'parent_id' => $create_schema->id,
-					            'field' => $key,
-					        ]);
-		    			}
+            if(is_array($form['value'])){
+                foreach ($form['value']['key'] as $ke1 => $value1) {
+                    if(is_array($form['value']['value'][$ke1])){
 
-		    		}
-	    	}
+                        // echo "<hr><p>$value1 -> array [$ke1]</p>";
+                        $create_schema2 = Skema::create([
+                            'resource_id' => $request->resource_id,
+                            'name_schema' => $value1,
+                            'type_schema' => 'array',
+                            'parent_id' => $create_schema->id,
+                            'field' => $key,
+                        ]);
+
+                        foreach ($form['value']['value'] as $key2 => $value2) {
+                            if(is_array($value2)){
+                                // return $value2;
+                                foreach ($value2['key'] as $key3 => $value3) {
+                                    if($key2 == $ke1){
+                                        // echo "<p>$key2 == $ke1</p>";
+                                        // echo "<p>$value3 -> ".$value2['value'][$key3]." </p>";
+                                        $create_schema3 = Skema::create([
+                                            'resource_id' => $request->resource_id,
+                                            'name_schema' => $value3,
+                                            'type_schema' => $value2['value'][$key3],
+                                            'parent_id' => $create_schema2->id,
+                                            'child_id' => $create_schema2->id,
+                                            'field' => $key,
+                                        ]);
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }else{
+                        // echo "<p>$value1 -> ".$form['value']['value'][$ke1]."</p>";
+                        $create_schema2 = Skema::create([
+                            'resource_id' => $request->resource_id,
+                            'name_schema' => $value1,
+                            'type_schema' => $form['value']['value'][$ke1],
+                            'parent_id' => $create_schema->id,
+                            'field' => $key,
+                        ]);
+                    }
+                }         
+            }
+        }
 	    }
         $ud = Auth::user()->id;
         $generate = $this->generate_data($request->resource_id);
@@ -294,7 +362,11 @@ class ProjectController extends Controller
 
     public function generate_data($resource_id)
     {
-        $data = Skema::where('resource_id', $resource_id)->where('parent_id','')->with('child')->select('id','name_schema','type_schema','parent_id','field')->get();
+        // $data = Skema::where('resource_id', $resource_id)->where('parent_id','')->with('child')->select('id','name_schema','type_schema','parent_id','child_id','field')->get();   
+        $data = Skema::where('resource_id', $resource_id)->where('parent_id','')->with(['child' => function ($query){
+            $query->with('child');
+        }])->select('id','name_schema','type_schema','parent_id','child_id','field')->get();
+        // return $data;
         $search_ = Resource::where('id', $resource_id)->first();
         $searchProject = Project::where('id', $search_->project_id)->first();
 
@@ -313,9 +385,22 @@ class ProjectController extends Controller
                         // echo "<p>".$key->name_schema;
                         $oy = array();
                         foreach($key->child as $hi){
-                            $f = $hi->type_schema;  
-                            // echo "<li>".$hi->name_schema." : ".$faker->$f."</li></p>";
-                            $oy[$hi->name_schema] = $faker->$f;
+                            if($hi->type_schema == 'array'){
+                                $oy2 = array();
+                                $oy3 = array();
+                                foreach ($hi->child as $key2) {
+                                    // echo "<p>$hi->name_schema($hi->id) -> <small>pny anak</small> $key2->name_schema($key2->parent_id) </p>";
+                                    if($key2->parent_id == $hi->id){
+                                        $difaker = $key2->type_schema;
+                                        $oy3[$key2->name_schema] = $faker->$difaker;
+                                        $oy[$hi->name_schema] = $oy3;
+                                    }
+                                }
+                            }else{
+                                $f = $hi->type_schema;  
+                                // echo "<li>".$hi->name_schema." : ".$faker->$f."</li></p>";
+                                $oy[$hi->name_schema] = $faker->$f;
+                            }
                         }    
                         $ha[$key->name_schema] = $oy;
                     }else if($key->type_schema == 'ObjectID'){

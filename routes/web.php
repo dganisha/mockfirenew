@@ -25,7 +25,7 @@ Route::get('/testing', function(){
 Route::get('/test', 'TestController@index');
 
 
-
+Route::get('/coba/{resource_id}', 'ProjectController@generate_data');
 
 // Route::get('/{id}', 'UserController@project');
 
